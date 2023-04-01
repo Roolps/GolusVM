@@ -1,14 +1,13 @@
 package golusvm
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"log"
+	"io"
 	"net/http"
 	"net/url"
 )
 
-func (c *ApiClient) Request(action string, fields map[string]string) map[string]string {
+// Makes post request to the api...
+func (c *ApiClient) request(action string, fields map[string]string) *[]byte {
 	payload := url.Values{
 		"key":    []string{c.Key},
 		"id":     []string{c.ID},
@@ -27,15 +26,11 @@ func (c *ApiClient) Request(action string, fields map[string]string) map[string]
 	}
 
 	defer resp.Body.Close()
-	var msg map[string]string
-	raw, err := ioutil.ReadAll(resp.Body)
-	log.Println(string(raw))
-	json.Unmarshal(raw, &msg)
-
+	raw, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil
 	}
 
-	// Marshal into JSON and return
-	return msg
+	// Return raw so func can marshal into correct type
+	return &raw
 }
