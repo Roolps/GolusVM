@@ -2,6 +2,7 @@ package golusvm
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"strings"
 )
@@ -34,4 +35,19 @@ func debug(b []byte) {
 	x := &map[string]string{}
 	json.Unmarshal(b, x)
 	log.Println(x)
+}
+
+type apiStatus struct {
+	Status    string `json:"status"`
+	StatusMsg string `json:"statusmsg"`
+}
+
+// Extracts status message from api response
+func extractStatus(raw *[]byte) error {
+	status := apiStatus{}
+	json.Unmarshal(*raw, &status)
+	if status.Status == "error" {
+		return errors.New(status.StatusMsg)
+	}
+	return nil
 }
