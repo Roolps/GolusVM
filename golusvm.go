@@ -2,6 +2,7 @@ package golusvm
 
 import (
 	"encoding/json"
+	"log"
 	"strings"
 )
 
@@ -27,4 +28,10 @@ func jsonMap(i interface{}) *map[string]string {
 	x := &map[string]string{}
 	json.Unmarshal(b, x)
 	return x
+}
+
+func debug(b []byte) {
+	x := &map[string]string{}
+	json.Unmarshal(b, x)
+	log.Println(x)
 }
