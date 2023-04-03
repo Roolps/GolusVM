@@ -21,10 +21,11 @@ func split(jsonRaw *[]byte, key string) *[]string {
 	var raw map[string]string
 	json.Unmarshal(*jsonRaw, &raw)
 	temp := strings.Split(raw[key], ",")
-	for key, val := range temp {
-		temp[key] = strings.Replace(val, " ", "", -1)
+	new := []string{}
+	for _, val := range temp {
+		new = append(new, strings.Replace(val, " ", "", -1))
 	}
-	return &temp
+	return &new
 }
 
 func jsonMap(i interface{}) *map[string]string {
