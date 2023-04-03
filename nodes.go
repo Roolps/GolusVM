@@ -12,7 +12,7 @@ import (
 
 func (c *ApiClient) ListISO(isoType string) *[]string {
 	var iso *[]string
-	raw := c.request("listiso", map[string]string{"type": "kvm"})
+	raw := c.request("listiso", map[string]string{"type": isoType})
 
 	err := extractStatus(raw)
 	if err != nil {
@@ -61,6 +61,7 @@ func (c *ApiClient) ListNodesByName(nodeType string) *[]string {
 func (c *ApiClient) ListNodesByID(nodeType string) *[]int {
 	var nodeList []int
 	raw := c.request("node-idlist", map[string]string{"type": nodeType})
+	debug(*raw)
 	temp := split(raw, "nodes")
 	for _, x := range *temp {
 		b, _ := strconv.Atoi(x)

@@ -18,8 +18,24 @@ func (c *ApiClient) GetServerInformation(sID int) *ServerInformation {
 	return server
 }
 
+func (c *ApiClient) GetServerState(sID int, nostatus bool, nograph bool) *VirtualServerState {
+	var state *VirtualServerState
+	raw := c.request("vserver-infoall", map[string]string{"vserverid": strconv.Itoa(sID), "nostatus": strconv.FormatBool(nostatus), "nograph": strconv.FormatBool(nograph)})
+	err := extractStatus(raw)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	json.Unmarshal(*raw, &state)
+	state.IPAddresses = split(raw, "ipaddresses")
+	state.IPv6Subnets = split(raw, "ipv6subnets")
+	state.Bandwidth = split(raw, "bandwidth")
+	state.HDD = split(raw, "hdd")
+	state.Memory = split(raw, "memory")
+	return state
+}
+
 func (c *ApiClient) CreateVirtualServer(s *CreateVirtualServer) *CreatedVirtualServer {
-	log.Println("Creating virtual server...")
 	var server *CreatedVirtualServer
 	raw := c.request("vserver-create", *jsonMap(*s))
 	err := extractStatus(raw)
@@ -55,6 +71,16 @@ func (c *ApiClient) RebuildVirtualServer(sID int, template string) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func (c *ApiClient) ListVirtualServers(nID int) *[]ServerInformation {
+	type temp struct {
+		VirtualServers []ServerInformation
+	}
+	var b temp
+	raw := c.request("node-virtualservers", map[string]string{"nodeid": strconv.Itoa(nID)})
+	json.Unmarshal(*raw, &b)
+	return &b.VirtualServers
 }
 
 /*

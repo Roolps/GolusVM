@@ -20,8 +20,8 @@ func point[T any](t T) *T {
 func split(jsonRaw *[]byte, key string) *[]string {
 	var raw map[string]string
 	json.Unmarshal(*jsonRaw, &raw)
-	temp := point(strings.Split(raw[key], ","))
-	return temp
+	temp := strings.Split(raw[key], ",")
+	return &temp
 }
 
 func jsonMap(i interface{}) *map[string]string {

@@ -1,6 +1,8 @@
 package golusvm
 
 type ServerInformation struct {
+	VServerID int `json:"vserverid,string"`
+
 	CTID_XID string `json:"ctid-xid"`
 
 	// Ip address of returned server
@@ -115,4 +117,20 @@ type CreatedVirtualServer struct {
 
 	// Node ID of the created server
 	NodeID string `json:"nodeid"`
+}
+
+type VirtualServerState struct {
+	State         string `json:"state"`
+	MainIPAddress string `json:"mainipaddress"`
+	IPAddresses   *[]string
+	Type          string `json:"type"`
+	TrafficGraph  string `json:"trafficgraph"`
+	LoadGraph     string `json:"loadgraph"`
+	MemoryGraph   string `json:"memorygraph"`
+	Node          string `json:"node"`
+	HDD           *[]string
+	Bandwidth     *[]string
+	Memory        *[]string
+	IPv6Subnets   *[]string
+	InternalIP    string `json:"internalips"`
 }
