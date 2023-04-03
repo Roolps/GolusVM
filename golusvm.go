@@ -21,6 +21,9 @@ func split(jsonRaw *[]byte, key string) *[]string {
 	var raw map[string]string
 	json.Unmarshal(*jsonRaw, &raw)
 	temp := strings.Split(raw[key], ",")
+	for key, val := range temp {
+		temp[key] = strings.Replace(val, " ", "", -1)
+	}
 	return &temp
 }
 
