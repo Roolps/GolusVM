@@ -45,8 +45,8 @@ func (c *APIClient) request(method string, action string, fields map[string]stri
 	if err := extractError(raw); err != nil {
 		return nil, err
 	}
+	// log.Println(string(raw))
 	return raw, nil
-	// log.Println(res.Status)
 }
 
 type apiError struct {
@@ -61,7 +61,7 @@ func extractError(raw []byte) error {
 		return fmt.Errorf("something went wrong while reading body: %v", err)
 	}
 	if e.Status == "error" {
-		return fmt.Errorf("Error: %v", e.Msg)
+		return fmt.Errorf("error: %v", e.Msg)
 	}
 	return nil
 }
