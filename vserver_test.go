@@ -46,3 +46,18 @@ func TestReboot(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestIsOnline(t *testing.T) {
+	newTest()
+	online, _ := testClient.IsOnline(58)
+	log.Println(online)
+}
+
+func TestChangeRootPassword(t *testing.T) {
+	newTest()
+	pw, err := testClient.ChangeRootPassword(58)
+	if err != nil {
+		t.Error(err)
+	}
+	log.Println(pw)
+}
