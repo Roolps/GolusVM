@@ -7,6 +7,31 @@ import (
 	"strconv"
 )
 
+type Virtualization string
+
+const (
+	OpenVZ Virtualization = "openvz"
+	Xen    Virtualization = "xen"
+	XenHVM Virtualization = "xen hvm"
+	KVM    Virtualization = "kvm"
+)
+
+type VirtualServer struct {
+	VServerID int    `json:"vserverid,string"`
+	CTIDXID   string `json:"ctid-xid"`
+	ClientID  int    `json:"clientid,string"`
+	IPAddress string `json:"ipaddress"`
+	Hostname  string `json:"hostname"`
+	Template  string `json:"template"`
+
+	HDD       int64 `json:"hdd,string"`
+	Memory    int64 `json:"memory,string"`
+	SwapBurst int64 `json:"swap-burst,string"`
+
+	Type Virtualization `json:"type"`
+	Mac  string         `json:"mac"`
+}
+
 // boot virtual server
 func (c *APIClient) Boot(id int) error {
 	_, err := c.request(http.MethodPost, "vserver-boot", map[string]string{"vserverid": strconv.Itoa(id)})
