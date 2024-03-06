@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type Virtualization string
@@ -30,6 +31,28 @@ type VirtualServer struct {
 
 	Type Virtualization `json:"type"`
 	Mac  string         `json:"mac"`
+}
+
+type VirtualServerState struct {
+	State         string         `json:"state"`
+	IPs           []string       `json:"-"`
+	IPsRAW        string         `json:"ipaddresses"`
+	MainIPAddress string         `json:"mainipaddress"`
+	Type          Virtualization `json:"type"`
+	Node          string         `json:"node"`
+}
+
+func (c *APIClient) VirtualServerState(id int) (*VirtualServerState, error) {
+	raw, err := c.request(http.MethodGet, "vserver-infoall", map[string]string{"vserverid": strconv.Itoa(id), "nostatus": "false", "nographs": "true"})
+	if err != nil {
+		return nil, err
+	}
+	server := &VirtualServerState{}
+	if err := json.Unmarshal(raw, &server); err != nil {
+		return nil, err
+	}
+	server.IPs = strings.Split(server.IPsRAW, ", ")
+	return server, nil
 }
 
 // boot virtual server
@@ -95,4 +118,9 @@ func (c *APIClient) ChangeRootPassword(id int) (string, error) {
 	p := &rootPassword{}
 	json.Unmarshal(raw, &p)
 	return p.Password, nil
+}
+
+func (c *APIClient) RebuildServer(id int, template string) error {
+	_, err := c.request(http.MethodPost, "vserver-rebuild", map[string]string{"vserverid": strconv.Itoa(id), "template": template})
+	return err
 }
