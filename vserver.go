@@ -66,9 +66,9 @@ type CreateVirtualServer struct {
 }
 
 type NewVirtualServer struct {
-	VServerID int `json:"vserverid,string"`
-	VirtID    int `json:"virtid,string"`
-	NodeID    int `json:"nodeid"`
+	VServerID int    `json:"vserverid,string"`
+	VirtID    string `json:"virtid"`
+	NodeID    int    `json:"nodeid"`
 
 	MainIPAddress string   `json:"mainipaddress"`
 	IPs           []string `json:"-"`
@@ -81,12 +81,12 @@ func (c *APIClient) CreateVirtualServer(s *CreateVirtualServer) (*NewVirtualServ
 	raw, _ := json.Marshal(s)
 	fields := map[string]string{}
 	json.Unmarshal(raw, &fields)
-	_, err := c.request(http.MethodPost, "vserver-create", fields)
+	raw, err := c.request(http.MethodPost, "vserver-create", fields)
 	if err != nil {
 		return nil, err
 	}
 	srv := &NewVirtualServer{}
-	if err := json.Unmarshal(raw, &s); err != nil {
+	if err := json.Unmarshal(raw, &srv); err != nil {
 		return nil, err
 	}
 	return srv, nil
