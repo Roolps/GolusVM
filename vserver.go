@@ -42,6 +42,56 @@ type VirtualServerState struct {
 	Node          string         `json:"node"`
 }
 
+type CreateVirtualServer struct {
+	Type      Virtualization `json:"type"`
+	NodeGroup int            `json:"nodegroup,string"`
+	Hostname  string         `json:"hostname"`
+	Password  string         `json:"password,omitempty"`
+	Username  string         `json:"username"`
+	Plan      string         `json:"plan"`
+	Template  string         `json:"template"`
+
+	IPs        int  `json:"ips,string"`
+	RandomIPv4 bool `json:"randomipv4,omitempty"`
+
+	HVM             int   `json:"hvmt,omitempty,string"`
+	CustomMemory    int64 `json:"custommemory,omitempty,string"`
+	CustomDiskSpace int64 `json:"customdiskspace,omitempty,string"`
+	CustomBandwidth int64 `json:"custombandwidth,omitempty,string"`
+	CustomCPU       int   `json:"customcpu,omitempty,string"`
+	CustomExtraIP   int   `json:"customextraip,omitempty,string"`
+
+	IssueLicense int `json:"issuelicense,omitempty,string"`
+	InternalIP   int `json:"internalip,omitempty,string"`
+}
+
+type NewVirtualServer struct {
+	VServerID int `json:"vserverid,string"`
+	VirtID    int `json:"virtid,string"`
+	NodeID    int `json:"nodeid"`
+
+	MainIPAddress string   `json:"mainipaddress"`
+	IPs           []string `json:"-"`
+	IPsRAW        string   `json:"extraipaddress"`
+	RootPassword  string   `json:"rootpassword"`
+	Hostname      string   `json:"hostname"`
+}
+
+func (c *APIClient) CreateVirtualServer(s *CreateVirtualServer) (*NewVirtualServer, error) {
+	raw, _ := json.Marshal(s)
+	fields := map[string]string{}
+	json.Unmarshal(raw, &fields)
+	_, err := c.request(http.MethodPost, "vserver-create", fields)
+	if err != nil {
+		return nil, err
+	}
+	srv := &NewVirtualServer{}
+	if err := json.Unmarshal(raw, &s); err != nil {
+		return nil, err
+	}
+	return srv, nil
+}
+
 func (c *APIClient) VirtualServerState(id int) (*VirtualServerState, error) {
 	raw, err := c.request(http.MethodGet, "vserver-infoall", map[string]string{"vserverid": strconv.Itoa(id), "nostatus": "false", "nographs": "true"})
 	if err != nil {

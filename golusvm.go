@@ -2,6 +2,7 @@ package golusvm
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"io"
 	"net/http"
@@ -50,15 +51,18 @@ func (c *APIClient) request(method string, action string, fields map[string]stri
 }
 
 type apiError struct {
-	Status string `json:"status"`
-	Msg    string `json:"statusmsg"`
+	Status string `xml:"status" json:"status"`
+	Msg    string `xml:"statusmsg" json:"statusmsg"`
 }
 
 func extractError(raw []byte) error {
 	e := &apiError{}
-	err := json.Unmarshal(raw, &e)
-	if err != nil {
-		return fmt.Errorf("something went wrong while reading body: %v", err)
+	if err := json.Unmarshal(raw, &e); err != nil {
+		// not json - try XML
+		rawstr := fmt.Sprintf("<error>%v</error>", string(raw))
+		if err := xml.Unmarshal([]byte(rawstr), &e); err != nil {
+			return fmt.Errorf("something went wrong while reading body: %v", err)
+		}
 	}
 	if e.Status == "error" {
 		return fmt.Errorf("error: %v", e.Msg)

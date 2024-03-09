@@ -61,3 +61,23 @@ func TestChangeRootPassword(t *testing.T) {
 	}
 	log.Println(pw)
 }
+
+func TestCreateVirtualServer(t *testing.T) {
+	newTest()
+	_, err := testClient.CreateVirtualServer(&CreateVirtualServer{
+		Hostname:  "yara.testing.com",
+		Username:  "Clubnode",
+		Plan:      "Clubnode",
+		NodeGroup: 4,
+		Type:      KVM,
+
+		CustomMemory:    1024 * 4,
+		CustomDiskSpace: 50,
+		CustomCPU:       5,
+		CustomBandwidth: 1024 * 2,
+		IPs:             1,
+	})
+	if err != nil {
+		t.Error(err)
+	}
+}
