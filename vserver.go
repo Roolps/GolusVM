@@ -93,7 +93,7 @@ func (c *APIClient) CreateVirtualServer(s *CreateVirtualServer) (*NewVirtualServ
 }
 
 func (c *APIClient) VirtualServerState(id int) (*VirtualServerState, error) {
-	raw, err := c.request(http.MethodGet, "vserver-infoall", map[string]string{"vserverid": strconv.Itoa(id), "nostatus": "false", "nographs": "true"})
+	raw, err := c.request(http.MethodGet, "vserver-infoall", map[string]string{"vserverid": strconv.Itoa(id), "nographs": "true"})
 	if err != nil {
 		return nil, err
 	}

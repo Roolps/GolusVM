@@ -62,6 +62,15 @@ func TestChangeRootPassword(t *testing.T) {
 	log.Println(pw)
 }
 
+func TestVirtualServerState(t *testing.T) {
+	newTest()
+	srv, err := testClient.VirtualServerState(58)
+	if err != nil {
+		t.Error(err)
+	}
+	log.Println(srv.State)
+}
+
 func TestCreateVirtualServer(t *testing.T) {
 	newTest()
 	_, err := testClient.CreateVirtualServer(&CreateVirtualServer{
