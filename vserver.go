@@ -77,6 +77,11 @@ type NewVirtualServer struct {
 	Hostname      string   `json:"hostname"`
 }
 
+type VirtualServerInfo struct {
+	VServerID int `json:"vserverid,string"`
+	CPUs      int `json:"cpus,string"`
+}
+
 func (c *APIClient) CreateVirtualServer(s *CreateVirtualServer) (*NewVirtualServer, error) {
 	raw, _ := json.Marshal(s)
 	fields := map[string]string{}
@@ -90,6 +95,18 @@ func (c *APIClient) CreateVirtualServer(s *CreateVirtualServer) (*NewVirtualServ
 		return nil, err
 	}
 	return srv, nil
+}
+
+func (c *APIClient) VirtualServerInfo(id int) (*VirtualServerInfo, error) {
+	raw, err := c.request(http.MethodGet, "vserver-info", map[string]string{"vserverid": strconv.Itoa(id)})
+	if err != nil {
+		return nil, err
+	}
+	server := &VirtualServerInfo{}
+	if err := json.Unmarshal(raw, &server); err != nil {
+		return nil, err
+	}
+	return server, nil
 }
 
 func (c *APIClient) VirtualServerState(id int) (*VirtualServerState, error) {
