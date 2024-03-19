@@ -70,6 +70,14 @@ func TestVirtualServerState(t *testing.T) {
 	}
 	log.Println(srv.State)
 }
+func TestVirtualServerInfo(t *testing.T) {
+	newTest()
+	srv, err := testClient.VirtualServerInfo(58)
+	if err != nil {
+		t.Error(err)
+	}
+	log.Println(srv.CPUs)
+}
 
 func TestCreateVirtualServer(t *testing.T) {
 	newTest()
@@ -86,6 +94,22 @@ func TestCreateVirtualServer(t *testing.T) {
 		CustomBandwidth: 1024 * 2,
 		IPs:             1,
 	})
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func TestSuspendServer(t *testing.T) {
+	newTest()
+	err := testClient.Suspend(58)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func TestUnsuspendServer(t *testing.T) {
+	newTest()
+	err := testClient.Unsuspend(58)
 	if err != nil {
 		t.Error(err)
 	}

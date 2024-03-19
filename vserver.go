@@ -140,6 +140,18 @@ func (c *APIClient) Reboot(id int) error {
 	return err
 }
 
+// suspend virtual server
+func (c *APIClient) Suspend(id int) error {
+	_, err := c.request(http.MethodPost, "vserver-suspend", map[string]string{"vserverid": strconv.Itoa(id)})
+	return err
+}
+
+// unsuspend virtual server
+func (c *APIClient) Unsuspend(id int) error {
+	_, err := c.request(http.MethodPatch, "vserver-unsuspend", map[string]string{"vserverid": strconv.Itoa(id)})
+	return err
+}
+
 // change virtual server hostname
 func (c *APIClient) ChangeHostname(id int, hostname string) error {
 	_, err := c.request(http.MethodPost, "vserver-hostname",
