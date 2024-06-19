@@ -203,3 +203,20 @@ func (c *APIClient) RebuildServer(id int, template string) error {
 	_, err := c.request(http.MethodPost, "vserver-rebuild", map[string]string{"vserverid": strconv.Itoa(id), "template": template})
 	return err
 }
+
+// memory measured in MB
+func (c *APIClient) ChangeMemory(id int, memory int) error {
+	_, err := c.request(http.MethodPost, "vserver-change-memory", map[string]string{"vserverid": strconv.Itoa(id), "memory": strconv.Itoa(memory)})
+	return err
+}
+
+// disk measured in GB
+func (c *APIClient) ChangeDisk(id int, disk int) error {
+	_, err := c.request(http.MethodPost, "vserver-change-hdd", map[string]string{"vserverid": strconv.Itoa(id), "hdd": strconv.Itoa(disk)})
+	return err
+}
+
+func (c *APIClient) ChangeCPU(id int, cpu int) error {
+	_, err := c.request(http.MethodPost, "vserver-change-cpu", map[string]string{"vserverid": strconv.Itoa(id), "cpu": strconv.Itoa(cpu)})
+	return err
+}
